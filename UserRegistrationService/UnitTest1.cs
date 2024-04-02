@@ -7,7 +7,7 @@ namespace UserRegistrationServiceTest
     {
 
         [TestMethod]
-        public void AddUser_InvalidShortUsername()
+        public void AddUser_InvalidShortUsername_FailsRegistration()
         {
             // Arrange
             RegistrationService registrationService = new RegistrationService();
@@ -23,7 +23,7 @@ namespace UserRegistrationServiceTest
         }
 
         [TestMethod]
-        public void AddUser_InvalidLongUsername()
+        public void AddUser_InvalidUsernameTooManyLetters_FailsRegistration()
         {
             // Arrange
             RegistrationService registrationService = new RegistrationService();
@@ -39,7 +39,7 @@ namespace UserRegistrationServiceTest
         }
 
         [TestMethod]
-        public void AddUser_InvalidNonAlphanumericCharacters()
+        public void AddUser_InvalidAlphanumericCharactersCanNotBeIncluded_FailsRegistration()
         {
             // Arrange
             RegistrationService registrationService = new RegistrationService();
@@ -52,132 +52,99 @@ namespace UserRegistrationServiceTest
             Assert.IsFalse(result, "Expected user registration to fail due to invalid characters in username.");
         }
 
-        //[TestMethod]
-        //public void AddUser_ValidUsername()
-        //{
-        //    // Arrange
-        //    RegistrationService registrationService = new RegistrationService();
-        //    string validUsername = "validuserrrr"; // valid username
-        //    string password = "password12345";
-        //    string email = "mail@example.com";
-
-        //    // Act
-        //    bool result = registrationService.AddUser(validUsername, password, email);
-
-
-        //    // Assert
-        //    Assert.IsTrue(result, "Expected user registration to succeed with valid username.");
-        //}
-   
- 
 
         [TestMethod]
-        public void AddUser_InvalidPassword_TooShort_Failure()
+        public void AddUser_ValidUsernameWithRightAmountOfLetters_SuccessfulRegistration()
+        {
+            // Arrange
+            RegistrationService registrationService = new RegistrationService();
+            string validUsername = "validuser"; // valid username
+
+            // Act
+            bool result = registrationService.AddUser(validUsername);
+
+            // Assert
+            Assert.IsTrue(result, "Expected user registration to succeed with valid username.");
+        }
+
+
+
+        [TestMethod]
+        public void AddUser_ValidPassword_SuccessfulRegistration()
+        {
+            // Arrange
+            RegistrationService registrationService = new RegistrationService();
+            string username = "validuser";
+            string validPassword = "password123!"; // valid password
+            string email = "test@example.com";
+
+            // Act
+            bool result = registrationService.AddUser(username, validPassword, email);
+
+            // Assert
+            Assert.IsTrue(result, "Expected user registration to succeed with valid password.");
+        }
+
+        [TestMethod]
+        public void AddUser_InvalidPassword_TooShort_FailsRegistration()
         {
             // Arrange
             RegistrationService registrationService = new RegistrationService();
             string username = "testuser";
-            string password = "pas"; // Lösenordet är för kort
+            string invalidPassword = "pas"; // Password is too short
             string email = "test@example.com";
 
             // Act
-            bool result = registrationService.AddUser(username, password, email);
+            bool result = registrationService.AddUser(username, invalidPassword, email);
 
             // Assert
             Assert.IsFalse(result, "Expected user registration to fail due to invalid password length.");
         }
 
+        [TestMethod]
+        public void AddUser_InvalidPassword_NoSpecialCharacter_FailsRegistration()
+        {
+            // Arrange
+            RegistrationService registrationService = new RegistrationService();
+            string username = "testuser";
+            string invalidPassword = "password123"; // Password does not contain any special character
+            string email = "test@example.com";
 
-        //[TestMethod]
-        //public void AddUser_ValidUser_Success()
-        //{
-        //    // Arrange
-        //    RegistrationService registrationService = new RegistrationService();
-        //    string username = "NilsAxling";
-        //    string password = "password1234";
-        //    string email = "hallo@hotmail.com"; 
+            // Act
+            bool result = registrationService.AddUser(username, invalidPassword, email);
 
-        //    // Act
-        //    bool result = registrationService.AddUser(username, password, email);
-        //    bool removeResult = registrationService.RemoveUser(username); // Ta bort användaren efter testet
+            // Assert
+            Assert.IsFalse(result, "Expected user registration to fail due to missing special character in password.");
+        }
+        [TestMethod]
+        public void ValidateEmail_ValidFormatWithAtSymbol_PassesValidation()
+        {
+            // Arrange
+            RegistrationService registrationService = new RegistrationService();
+            string validEmail = "test@example.com";
 
+            // Act: Försök validera en giltig e-postadress
+            bool result = registrationService.IsEmailValid(validEmail);
 
-        //    // Assert
-        //    Assert.IsTrue(result, "Expected user registration to succeed.");
-        //    Assert.IsTrue(registrationService.IsUsernameTaken(username), "Expected username to be taken after registration.");
-        //    Assert.IsTrue(removeResult, "Failed to remove user.");
+            // Assert: Förvänta dig att e-postadressen valideras som giltig
+            Assert.IsTrue(result, "Expected email validation to pass for valid format.");
+        }
 
-        //}
+        [TestMethod]
+        public void ValidateEmail_InvalidFormatWithoutAtSymbol_FailsValidation()
+        {
+            // Arrange
+            RegistrationService registrationService = new RegistrationService();
+            string invalidEmail = "test.example.com";
 
-        //[TestMethod]
-        //public void AddUser_ExistingUsername_Failure()
-        //{
-        //    // Arrange
-        //    RegistrationService registrationService = new RegistrationService();
-        //    string existingUsername = "existinguser";
-        //    string password = "password123";
-        //    string email = "existing@example.com";
-        //    registrationService.AddUser(existingUsername, password, email); 
+            // Act: Försök validera en ogiltig e-postadress
+            bool result = registrationService.IsEmailValid(invalidEmail);
 
-        //    // Act
-        //    bool result = registrationService.AddUser(existingUsername, "NewPassword123!", "new@example.com");
-
-        //    // Assert
-        //    Assert.IsFalse(result, "Expected user registration to fail due to existing username.");
-        //}
+            // Assert: Förvänta dig att e-postadressen valideras som ogiltig
+            Assert.IsFalse(result, "Expected email validation to fail for invalid format.");
+        }
 
 
 
-
-
-
-        //[TestMethod]
-        //public void AddUser_InvalidUsername_TooShort()
-        //{
-        //    // Arrange
-        //    RegistrationService registrationService = new RegistrationService();
-        //    string username = "abc"; // Too short
-        //    string password = "password123";
-        //    string email = "test@example.com";
-
-        //    // Act
-        //    bool result = registrationService.AddUser(username, password, email);
-
-        //    // Assert
-        //    Assert.IsFalse(result);
-        //}
-
-        //[TestMethod]
-        //public void AddUser_InvalidUsername_TooLong()
-        //{
-        //    // Arrange
-        //    RegistrationService registrationService = new RegistrationService();
-        //    string username = "abcdefghijklmnopqrstu"; // Too long
-        //    string password = "password123";
-        //    string email = "test@example.com";
-
-        //    // Act
-        //    bool result = registrationService.AddUser(username, password, email);
-
-        //    // Assert
-        //    Assert.IsFalse(result);
-        //}
-
-        //[TestMethod]
-        //public void AddUser_NonAplhanumeric()
-        //{
-        //    // Arrange
-        //    RegistrationService registrationService = new RegistrationService();
-        //    string username = "abc$123";
-        //    string password = "password123";
-        //    string email = "test@example.com";
-
-        //    // Act
-        //    bool result = registrationService.AddUser(username, password, email);
-
-        //    // Assert
-        //    Assert.IsFalse(result);
-
-        //}
     }
 }
