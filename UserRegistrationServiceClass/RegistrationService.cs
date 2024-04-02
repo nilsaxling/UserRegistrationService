@@ -39,12 +39,12 @@ public class RegistrationService
             return false;
         }
 
-        //// Validera e-postadress
-        //if (!IsEmailValid(email))
-        //{
-        //    Console.WriteLine("Invalid email address.");
-        //    return false;
-        //}
+        // Validera e-postadress
+        if (!IsEmailValid(email))
+        {
+            Console.WriteLine("Invalid email address.");
+            return false;
+        }
 
         // Lägg till användare
         Users.Add(new User(username, password, email));

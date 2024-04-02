@@ -117,7 +117,7 @@ namespace UserRegistrationServiceTest
             Assert.IsFalse(result, "Expected user registration to fail due to missing special character in password.");
         }
         [TestMethod]
-        public void ValidateEmail_ValidFormatWithAtSymbol_PassesValidation()
+        public void AddUser_ValidEmailFormatWithAtSymbol_PassesValidation()
         {
             // Arrange
             RegistrationService registrationService = new RegistrationService();
@@ -131,7 +131,7 @@ namespace UserRegistrationServiceTest
         }
 
         [TestMethod]
-        public void ValidateEmail_InvalidFormatWithoutAtSymbol_FailsValidation()
+        public void AddUser_InvalidEmailFormatWithoutAtSymbol_FailsValidation()
         {
             // Arrange
             RegistrationService registrationService = new RegistrationService();
@@ -143,8 +143,6 @@ namespace UserRegistrationServiceTest
             // Assert: Förvänta dig att e-postadressen valideras som ogiltig
             Assert.IsFalse(result, "Expected email validation to fail for invalid format.");
         }
-
-
 
     }
 }
