@@ -184,19 +184,17 @@ namespace UserRegistrationServiceTest
         {
             // Arrange
             RegistrationService registrationService = new RegistrationService();
-
-            var username1 = new User("Nilsaxling", "korvkiosk!", "nils@gmail.com"); // Skapar en användare med specifika uppgifter.
-            var username2 = new User("Nilsaxling", "korvkiosk!", "nils@gmail.com"); // Skapar en annan användare med samma uppgifter.
+            string existingUsername = "existinguser"; // Username that already exists
+            bool firstAttemptResult = registrationService.AddUser(existingUsername);
 
             // Act
-            bool firstAttemptResult = registrationService.AddUser(username1.Username); // Försök lägga till den första användaren
-            bool secondAttemptResult = registrationService.AddUser(username2.Username); // Försök lägga till samma användare igen
+
+            bool secondAttemptResult = registrationService.AddUser(existingUsername); // Try to add the same user again
 
             // Assert
-            Assert.IsTrue(firstAttemptResult, "Första försöket att lägga till användaren ska lyckas.");
-            Assert.IsFalse(secondAttemptResult, "Andra försöket att lägga till användaren med befintligt användarnamn ska misslyckas.");
+            Assert.IsTrue(firstAttemptResult, "First attempt to add user should succeed.");
+            Assert.IsFalse(secondAttemptResult, "Second attempt to add user with existing username should fail.");
         }
-
 
     }
 

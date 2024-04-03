@@ -4,7 +4,7 @@ using System.Linq;
 
 public class RegistrationService
 {
-    private List<User> Users { get; set; } = new List<User>();
+    private List<User> users = new List<User>(); // List to store users
 
     // Method to Add user with only a username
     public bool AddUser(string username)
@@ -22,15 +22,12 @@ public class RegistrationService
             Console.WriteLine("Username already taken. Please choose a different username.");
             return false;
         }
-        else
-        {
-            // Add user without password and email
-            Users.Add(new User(username, "", ""));
-            Console.WriteLine("User added successfully.");
-            return true;
-        }
-    }
 
+        // Add user to the list of users
+        users.Add(new User(username, "", ""));
+        Console.WriteLine("User added successfully.");
+        return true;
+    }
 
     // Method to Add user with username, password, and email validation
     public bool AddUser(string username, string password, string email)
@@ -52,58 +49,52 @@ public class RegistrationService
         // Validate email address
         if (!IsEmailValid(email))
         {
-            Console.WriteLine("Invalid email address. Email");
+            Console.WriteLine("Invalid email address.");
             return false;
         }
 
-        // Add user
-        Users.Add(new User(username, password, email));
+        // Check if the username is already taken
+        if (IsUsernameTaken(username))
+        {
+            Console.WriteLine("Username already taken. Please choose a different username.");
+            return false;
+        }
+
+        // Add user to the list of users
+        users.Add(new User(username, password, email));
         Console.WriteLine("User added successfully.");
         return true;
     }
 
-    // Check if the password meets the following criteria:
+    // Method to check if the username is valid
     public bool IsUsernameValid(string username)
     {
         return username.Length >= 5 && username.Length <= 20 && IsAlphanumeric(username);
     }
 
-    // Check if the string contains only alphanumeric characters
+    // Method to check if the string contains only alphanumeric characters
     public bool IsAlphanumeric(string str)
     {
         return str.All(char.IsLetterOrDigit);
     }
 
-    // Check if the password meets the following criteria:
+    // Method to check if the password is valid
     public bool IsPasswordValid(string password)
     {
         return password.Length >= 8 && password.Any(char.IsLetterOrDigit) && password.Any(c => !char.IsLetterOrDigit(c));
     }
 
-    // Check if the email address contains the "@" symbol
+    // Method to check if the email address is valid
     public bool IsEmailValid(string email)
     {
-        // Check if the email address contains the "@" symbol
-        if (email.Contains("@"))
-        {
-            // If the email address contains the "@" symbol, it is considered valid
-            return true;
-        }
-        else
-        {
-            // Otherwise, it is considered invalid
-            return false;
-        }
+        // Perform email validation logic here
+        // For simplicity, let's assume any string containing "@" is considered valid
+        return email.Contains("@");
     }
 
-    // This method checks if the given username is already in use.
+    // Method to check if the username is already taken
     public bool IsUsernameTaken(string username)
     {
-        return Users.Any(u => u.Username == username);
+        return users.Any(u => u.Username == username);
     }
-
 }
-
-
-
-
