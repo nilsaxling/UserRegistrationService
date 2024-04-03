@@ -45,12 +45,20 @@ namespace UserRegistrationServiceTest
             RegistrationService registrationService = new RegistrationService();
             string invalidCharactersUsername = "abc$123"; // non-alphanumeric characters
 
-
             // Act
             bool result = registrationService.IsAlphanumeric(invalidCharactersUsername);
+
             // Assert
-            Assert.IsFalse(result, "Expected user registration to fail due to invalid characters in username.");
+            if (result)
+            {
+                Assert.Fail("Expected user registration to fail due to invalid characters in username.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid username. Username can only contain alphanumeric characters.");
+            }
         }
+
 
 
         [TestMethod]
@@ -123,10 +131,10 @@ namespace UserRegistrationServiceTest
             RegistrationService registrationService = new RegistrationService();
             string validEmail = "test@example.com";
 
-            // Act: Försök validera en giltig e-postadress
+            // Act: Attempt to validate a valid email address
             bool result = registrationService.IsEmailValid(validEmail);
 
-            // Assert: Förvänta dig att e-postadressen valideras som giltig
+            // Assert: Expect the email address to be validated as valid
             Assert.IsTrue(result, "Expected email validation to pass for valid format.");
         }
 
@@ -137,12 +145,59 @@ namespace UserRegistrationServiceTest
             RegistrationService registrationService = new RegistrationService();
             string invalidEmail = "test.example.com";
 
-            // Act: Försök validera en ogiltig e-postadress
+            // Act: Attempt to validate an invalid email address
             bool result = registrationService.IsEmailValid(invalidEmail);
+            
 
-            // Assert: Förvänta dig att e-postadressen valideras som ogiltig
+            if (result)
+            {
+                Assert.Fail("Expected email validation to fail for invalid format.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid email. Email must contain the '@' symbol.");
+            }
+            // Assert: Expect the email address to fail validation for invalid format
             Assert.IsFalse(result, "Expected email validation to fail for invalid format.");
+            
+        }
+        [TestMethod]
+        public void AddUser_UniqueUsername_NewUsername_PassesValidation()
+        {
+            // Arrange
+            RegistrationService registrationService = new RegistrationService();
+            string newUsername = "newuser"; // Username that doesn't already exist
+
+            // Act
+            bool result = registrationService.AddUser(newUsername);
+
+            // Assert
+            Assert.IsTrue(result, "Expected user registration to pass for a unique username.");
+
+            // Check that the user has actually been added to the list
+            Assert.IsTrue(registrationService.IsUsernameTaken(newUsername), "Expected the new username to be added to the list.");
         }
 
+
+        [TestMethod]
+        public void AddUser_UniqueUsername_ExistingUsername_FailsValidation()
+        {
+            // Arrange
+            RegistrationService registrationService = new RegistrationService();
+
+            var username1 = new User("Nilsaxling", "korvkiosk!", "nils@gmail.com"); // Skapar en användare med specifika uppgifter.
+            var username2 = new User("Nilsaxling", "korvkiosk!", "nils@gmail.com"); // Skapar en annan användare med samma uppgifter.
+
+            // Act
+            bool firstAttemptResult = registrationService.AddUser(username1.Username); // Försök lägga till den första användaren
+            bool secondAttemptResult = registrationService.AddUser(username2.Username); // Försök lägga till samma användare igen
+
+            // Assert
+            Assert.IsTrue(firstAttemptResult, "Första försöket att lägga till användaren ska lyckas.");
+            Assert.IsFalse(secondAttemptResult, "Andra försöket att lägga till användaren med befintligt användarnamn ska misslyckas.");
+        }
+
+
     }
+
 }
